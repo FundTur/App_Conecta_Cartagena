@@ -1,1 +1,2 @@
 # App-Proyecto-Cartagena
+Este proyecto tiene como objetivo desarrollar el backend para ejecutar la APP conecta cartagena, en este proyecto se desarrollo toda la infraestructura necesaria para soportar el frontend y todas las funcionalidades de la APP, como la creacion de la base de datos, y desarrollo de la logica de la applicacion, instancias en la nube y el uso de technolgias de punta y servicios alojados en la nube como directus y AWS
