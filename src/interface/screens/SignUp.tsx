@@ -1,62 +1,150 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components/native';
-import { TextInput, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { TextInput, TouchableOpacity, Image, ScrollView, Alert } from 'react-native';
 import { signupHeader } from '../../assets/images';
 import CheckBox from '@react-native-community/checkbox';
 import { Picker } from '@react-native-picker/picker';
+import { useNavigation } from '@react-navigation/native';
 
 const SignUpScreen = () => {
-  const [isChecked, setIsChecked] = useState(false);
-  const [selectedGender, setSelectedGender] = useState('');
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+        firstName: '',
+        lastName: '',
+        phoneNumber: '',
+        location: '',
+        age: '',
+        selectedGender: '',
+        isChecked: false,
+    });
 
-  return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      <Container>
-        <Header>
-          <Logo source={signupHeader} />
-          <Title>Conecta Cartagena</Title>
-          <Subtitle>Personaliza tu visita a la ciudad con IA</Subtitle>
-        </Header>
+    const navigation = useNavigation<any>();
 
-        <FormContainer>
-          <StyledInput placeholder="Email" />
-          <StyledInput placeholder="Contraseña" secureTextEntry />
-          <StyledInput placeholder="Nombre" />
-          <StyledInput placeholder="Apellidos" />
-          <StyledInput placeholder="Número de celular" keyboardType="phone-pad" />
-          <StyledInput placeholder="¿De dónde nos visita?" />
+    const [isButtonEnabled, setIsButtonEnabled] = useState(false);
 
-          {/* Picker para seleccionar el género */}
-          <PickerContainer>
-            <Picker
-              selectedValue={selectedGender}
-              onValueChange={(itemValue) => setSelectedGender(itemValue)}
-              style={{ height: 50 }}
-            >
-              <Picker.Item label="Selecciona tu sexo" value="" />
-              <Picker.Item label="Masculino" value="male" />
-              <Picker.Item label="Femenino" value="female" />
-              <Picker.Item label="Otro" value="other" />
-            </Picker>
-          </PickerContainer>
+    // Función para manejar cambios en los inputs
+    const handleInputChange = (field: string, value: string | boolean) => {
+        setFormData({
+            ...formData,
+            [field]: value,
+        });
+    };
 
-          <StyledInput placeholder="Edad" keyboardType="numeric" />
+    // Validar si todos los campos están completos y el checkbox está seleccionado
+    useEffect(() => {
+        const { email, password, firstName, lastName, phoneNumber, location, age, selectedGender, isChecked } = formData;
 
-          <TermsContainer>
-            <FormCheckbox value={isChecked} onValueChange={setIsChecked} />
-            <TermsText>Acepto los términos y condiciones.</TermsText>
-          </TermsContainer>
-          <SubmitButton>
-            <ButtonText>Conectar</ButtonText>
-          </SubmitButton>
-        </FormContainer>
+        if (
+            email && password && firstName && lastName && phoneNumber && location && age && selectedGender && isChecked
+        ) {
+            setIsButtonEnabled(true);
+        } else {
+            setIsButtonEnabled(false);
+        }
+    }, [formData]);
 
-        <Footer>
-          <FooterText>¿Ya tienes una cuenta? <BoldText>Inicia sesión.</BoldText></FooterText>
-        </Footer>
-      </Container>
-    </ScrollView>
-  );
+    const handleRegister = () => {
+        if (isButtonEnabled) {
+            // Lógica para enviar los datos del formulario
+            console.log("Formulario de registro:", formData);
+            Alert.alert("Éxito", "Datos registrados con éxito");
+        }
+    };
+
+    const handleGoToLogin = () => {
+        navigation.navigate("Login");
+    };
+
+    return (
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+            <Container>
+                <Header>
+                    <Logo source={signupHeader} />
+                    <Title>Conecta Cartagena</Title>
+                    <Subtitle>Personaliza tu visita a la ciudad con IA</Subtitle>
+                </Header>
+
+                <FormContainer>
+                    <StyledInput
+                        placeholder="Email"
+                        value={formData.email}
+                        onChangeText={(value) => handleInputChange('email', value)}
+                        keyboardType="email-address"
+                    />
+                    <StyledInput
+                        placeholder="Contraseña"
+                        secureTextEntry
+                        value={formData.password}
+                        onChangeText={(value) => handleInputChange('password', value)}
+                    />
+                    <StyledInput
+                        placeholder="Nombre"
+                        value={formData.firstName}
+                        onChangeText={(value) => handleInputChange('firstName', value)}
+                    />
+                    <StyledInput
+                        placeholder="Apellidos"
+                        value={formData.lastName}
+                        onChangeText={(value) => handleInputChange('lastName', value)}
+                    />
+                    <StyledInput
+                        placeholder="Número de celular"
+                        value={formData.phoneNumber}
+                        onChangeText={(value) => handleInputChange('phoneNumber', value)}
+                        keyboardType="phone-pad"
+                    />
+                    <StyledInput
+                        placeholder="¿De dónde nos visita?"
+                        value={formData.location}
+                        onChangeText={(value) => handleInputChange('location', value)}
+                    />
+
+                    {/* Picker para seleccionar el género */}
+                    <PickerContainer>
+                        <Picker
+                            selectedValue={formData.selectedGender}
+                            onValueChange={(value) => handleInputChange('selectedGender', value)}
+                            style={{ height: 50 }}
+                        >
+                            <Picker.Item label="Selecciona tu sexo" value="" enabled={false} />
+                            <Picker.Item label="Masculino" value="male" />
+                            <Picker.Item label="Femenino" value="female" />
+                            <Picker.Item label="Otro" value="other" />
+                        </Picker>
+                    </PickerContainer>
+
+                    <StyledInput
+                        placeholder="Edad"
+                        value={formData.age}
+                        onChangeText={(value) => handleInputChange('age', value)}
+                        keyboardType="numeric"
+                    />
+
+                    <TermsContainer>
+                        <FormCheckbox
+                            value={formData.isChecked}
+                            onValueChange={(value) => handleInputChange('isChecked', value)}
+                        />
+                        <TermsText>Acepto los términos y condiciones.</TermsText>
+                    </TermsContainer>
+
+                    <SubmitButton
+                        onPress={handleRegister}
+                        disabled={!isButtonEnabled}
+                        style={{ backgroundColor: isButtonEnabled ? '#ff9307' : '#aaaaaa' }}
+                    >
+                        <ButtonText>Conectar</ButtonText>
+                    </SubmitButton>
+                </FormContainer>
+
+                <Footer>
+                    <FooterText>¿Ya tienes una cuenta?</FooterText>
+                    <LoginButtonText onPress={handleGoToLogin}><BoldText>Inicia sesión.</BoldText></ LoginButtonText>
+                </Footer>
+            </Container>
+        </ScrollView>
+    );
 };
 
 export default SignUpScreen;
@@ -114,7 +202,6 @@ const StyledInput = styled(TextInput)`
   margin-bottom: 15px;
 `;
 
-// Container para el Picker
 const PickerContainer = styled.View`
   height: 50px;
   border-width: 1px;
@@ -143,12 +230,13 @@ const TermsText = styled.Text`
   color: #666;
 `;
 
-const SubmitButton = styled(TouchableOpacity)`
-  background-color: #d3d3d3;
+const SubmitButton = styled(TouchableOpacity) <{ disabled: boolean }>`
   height: 50px;
   border-radius: 10px;
   justify-content: center;
   align-items: center;
+
+  background-color: ${(props) => (props.disabled ? '#aaaaaa' : '#d3d3d3')};
 `;
 
 const ButtonText = styled.Text`
@@ -160,6 +248,11 @@ const ButtonText = styled.Text`
 const Footer = styled.View`
   margin: 30px 20px;
   align-items: center;
+  justify-content: center;
+  align-items: center;
+
+  gap: 10px;
+  flex-direction: row;
 `;
 
 const FooterText = styled.Text`
@@ -170,4 +263,7 @@ const FooterText = styled.Text`
 const BoldText = styled.Text`
   font-weight: bold;
   color: #000;
+`;
+
+const LoginButtonText = styled.TouchableOpacity`
 `;
