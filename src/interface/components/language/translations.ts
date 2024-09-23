@@ -5,7 +5,7 @@ export const translations: { [key: string]: any } = {
     login: "Login",
     register: "Register",
     home: "Home",
-    settings: "Settings",
+    settings: "Setins",
   },
   es: {
     welcomeTitle: "Conecta Cartagena",
