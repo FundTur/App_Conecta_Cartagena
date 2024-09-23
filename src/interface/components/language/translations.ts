@@ -2,7 +2,7 @@ export const translations: { [key: string]: any } = {
   en: {
     welcomeTitle: "Connect Cartagena",
     welcomeSubtitle: "Clear rates for a wonderful experience",
-    login: "Login",
+    login: "Login  ",
     register: "Register",
     home: "Home",
     settings: "Setins",
