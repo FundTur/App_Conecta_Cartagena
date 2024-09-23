@@ -1,7 +1,7 @@
 export const translations: { [key: string]: any } = {
   en: {
     welcomeTitle: "Connect Cartagena",
-    welcomeSubtitle: "Clear rates for a wonderful experience",
+    welcomeSubtitle: "Clear rates for a wonderful expes adsadsdrience",
     login: "Login",
     register: "Register",
     home: "Home",
